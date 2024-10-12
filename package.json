@@ -1,0 +1,42 @@
+{
+  "name": "magenta-backend",
+  "version": "1.0.0",
+  "description": "e-commerce backend for e-commerce application",
+  "main": "src/server.js",
+  "scripts": {
+    "server": "nodemon server.js",
+    "start:dev": "cross-env NODE_ENV=development nodemon server.js",
+    "start:test": "cross-env NODE_ENV=staging nodemon server.js",
+    "start:prod": "cross-env NODE_ENV=production nodemon server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/Abdo-ka/magenta-backend.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Abdo-ka/magenta-backend/issues"
+  },
+  "homepage": "https://github.com/Abdo-ka/magenta-backend#readme",
+  "devDependencies": {
+    "@types/node": "^22.7.4"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "cross-env": "^7.0.3",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0",
+    "http-status": "^1.7.4",
+    "joi": "^17.13.3",
+    "jsonwebtoken": "^9.0.2",
+    "moment": "^2.30.1",
+    "mongoose": "^8.7.0",
+    "morgan": "^1.10.0",
+    "nodemon": "^3.1.7",
+    "passport": "^0.7.0",
+    "path": "^0.12.7",
+    "validator": "^13.12.0"
+  }
+}
