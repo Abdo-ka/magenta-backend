@@ -1,22 +1,15 @@
 // Importing required modules
-const mongoose = require('mongoose');
-const APIFeatures = require('./../utils/ApiFeatures');
 const catchAsync = require('../utils/catchAsync');
-const ApiError = require('../utils/ApiError');
-const httpStatus = require('http-status');
-const product = require('../models/productModels');
+
 const {
   createProduct,
   getProducts,
   deleteProducts,
+  getProductWithId,
+  updateProduct,
 } = require('../services/productServices');
-
-exports.offer = (req, res, next) => {
-  req.query.limit = '5';
-  req.query.sort = 'price';
-  req.query.field = 'name,rating,price';
-  next();
-};
+const ApiError = require('../utils/ApiError');
+const { STATUS_CODES } = require('http');
 
 // Controller to add a new product
 exports.addProduct = catchAsync(async (req, res) => {
@@ -28,41 +21,18 @@ exports.addProduct = catchAsync(async (req, res) => {
 });
 
 // Controller to update an existing product by ID
-exports.updateProduct = async (req, res) => {
-  try {
-    const updatedData = await product.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      {
-        new: true,
-        runValidators: true, // Run validators on the update operation
-      }
-    );
-    res.status(200).json({
-      status: 'success',
-      data: updatedData,
-    });
-  } catch (err) {
-    res.status(400).json({ status: 'fail', message: err });
-  }
-};
+exports.updateProduct = catchAsync(async (req, res) => {
+  const product = await updateProduct(req);
+  res.status(200).json({ status: 'success', product: product });
+});
 
 // Controller to get a single product by ID
-exports.getProduct = catchAsync(async (req, res, next) => {
-  // try {
-  //   const singleProduct = await product.findById(req.params.id);
-  //   if (!singleProduct) {
-  //     return next(new ApiError(httpStatus.NOT_FOUND, 'Product not found'));
-  //   }
-  //   res.status(200).json({
-  //     status: 'success',
-  //     data: singleProduct,
-  //   });
-  // } catch (err) {
-  //   return next(
-  //     new ApiError(httpStatus.FAILED_DEPENDENCY, 'Failed to fetch product')
-  //   );
-  // }
+exports.getProduct = catchAsync(async (req, res) => {
+  const product = await getProductWithId(req.params.id);
+  res.status(200).json({
+    status: 'success',
+    product: product,
+  });
 });
 
 // Controller to delete a product by ID
@@ -75,6 +45,13 @@ exports.deleteProduct = catchAsync(async (req, res) => {
   });
 });
 
+exports.offer = (req, res, next) => {
+  req.query.limit = '5';
+  req.query.sort = 'price';
+  req.query.field = 'name,rating,price';
+  next();
+};
+
 // Controller to get all products with filtering, sorting, field limiting, and pagination
 exports.getAllProduct = catchAsync(async (req, res) => {
   const products = await getProducts(req);
@@ -82,25 +59,4 @@ exports.getAllProduct = catchAsync(async (req, res) => {
     status: 'success',
     data: products,
   });
-  // try {
-  //   const features = new APIFeatures(o.find(), req.query)
-  // .filter()
-  // .sort()
-  // .limitField()
-  // .pagination();
-
-  //   const allproducts = await features.query;
-
-  //   res.status(200).json({
-  //     status: 'success',
-  //     result: allproducts.length,
-  //     data: allproducts,
-  //   });
-  // } catch (err) {
-  //   res.status(404).json({
-  //     status: 'failed',
-  //     result: 'Something went wrong',
-  //     message: `${err}`,
-  //   });
-  // }
 });

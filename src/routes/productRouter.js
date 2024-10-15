@@ -11,18 +11,24 @@ const {
 const { validateProductId } = require('../middleware/validatroIdMiddleware');
 const productValidation = require('../validation/product.validation');
 const validate = require('../middleware/validate');
+const { protect } = require('../services/authServices');
+
 const productRouter = express.Router();
 
 // productRouter.param('id');
 productRouter
   .route('/')
-  .get(getAllProduct)
+  .get(protect, getAllProduct)
   .post(validate(productValidation.addProduct), addProduct);
-productRouter.route('/offer').get(offer);
+productRouter.route('/offer').get(offer, getAllProduct);
 productRouter
   .route('/:id')
   .get(validateProductId, getProduct)
   .delete(validateProductId, deleteProduct)
-  .patch(validateProductId, updateProduct);
+  .patch(
+    validateProductId,
+    validate(productValidation.addProduct),
+    updateProduct
+  );
 
 module.exports = productRouter;
